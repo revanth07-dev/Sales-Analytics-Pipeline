@@ -1,0 +1,38 @@
+# C:\Users\ginnu\Projects\airflow-docker\dbt_project\sales_analytics\models\sources.yml
+version: 2
+
+sources:
+  - name: sales_raw # A logical name for your source system
+    database: sales_data_warehouse # Your database name (e.g., sales_data_warehouse)
+    schema: staging # The schema where your raw table is
+    tables:
+      - name: sales # The name of your raw table
+        identifier: sales # Actual table name in the DB (important if it differs from 'name')
+        columns:
+          - name: "Order Date"
+            description: "Timestamp of the order."
+            tests:
+              - not_null
+          - name: "Order ID"
+            description: "Unique identifier for each order."
+            tests:
+              - unique
+              - not_null
+          - name: "Product"
+            description: "Name of the product."
+          - name: "Product_ean"
+            description: "Product's EAN code (European Article Number)."
+          - name: "catégorie"
+            description: "Category of the product."
+          - name: "Purchase Address"
+            description: "Full purchase address."
+          - name: "Quantity Ordered"
+            description: "Number of units ordered."
+          - name: "Price Each"
+            description: "Price per unit of the product."
+          - name: "Cost price"
+            description: "Cost per unit of the product."
+          - name: "turnover"
+            description: "Total revenue for the order line."
+          - name: "margin"
+            description: "Profit margin for the order line."
