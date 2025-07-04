@@ -1,160 +1,114 @@
 # Sales-Analytics-Pipeline
 
-This project demonstrates the fundamental concepts and practical application of building a modern data engineering pipeline. It extracts raw sales data, cleans and transforms it into a structured analytical data model, and orchestrates the entire process using industry-standard tools.
+This project demonstrates building a modern data engineering pipeline with industry-standard tools. It extracts raw sales data, cleans and transforms it into a structured analytical data model, and orchestrates the process using Apache Airflow.
 
-Table of Contents
-Project Overview
+---
 
-Goals
+## Table of Contents
 
-Architecture
+1. [Project Overview](#project-overview)
+2. [Architecture](#architecture)
+3. [Goals](#goals)
+4. [Technologies Used](#technologies-used)
+5. [Getting Started](#getting-started)
+6. [Future Work](#future-work)
 
-Technologies Used
+---
 
-Setup Instructions (Local Environment)
+## Project Overview
 
-Prerequisites
+This project implements an **ELT (Extract, Load, Transform)** data pipeline for sales data. The goal is to process raw sales transactions from a CSV file, load them into a staging area, and transform them into a Kimball-style dimensional model (Fact and Dimension tables) for analytics. The workflow is automated using Apache Airflow.
 
-Step 1: Project Setup
+---
 
-Step 2: PostgreSQL Database Setup (Sales Data)
+## Architecture
 
-Step 3: Apache Airflow Setup
+The pipeline follows an **ELT** pattern:
 
-Step 4: dbt Core Setup
+- **Extract & Load (EL):**  
+  - A Python script reads `sales_data.csv`, performs basic cleaning, and loads data into the `staging.sales` table in PostgreSQL.  
+  - Triggered by Airflow.
 
-Pipeline Details
+- **Transform (T):**  
+  - dbt models read from `staging.sales` and create `dim_dates`, `dim_products`, and `fact_sales` tables in the `analytics` schema.  
+  - Also triggered by Airflow.
 
-Data Ingestion (Python)
+- **Orchestration:**  
+  - Apache Airflow schedules and monitors the ingestion and transformation steps.
 
-Data Transformation (dbt)
+**Pipeline Diagram:**
 
-Orchestration (Airflow)
+```mermaid
+graph TD
+    A[sales_data.csv] --> B(Python Script: load_sales_data.py);
+    B --> C(PostgreSQL DB: sales_data_warehouse);
+    C --> D[Schema: staging.sales];
+    D --> E(dbt Project: sales_analytics);
+    E --> F[Schema: analytics.dim_dates];
+    E --> G[Schema: analytics.dim_products];
+    E --> H[Schema: analytics.fact_sales];
+    Airflow[Apache Airflow] -- Triggers hourly --> B;
+    Airflow -- Triggers after B --> E;
+    F -- For BI/Analytics --> I[Power BI / Dashboards];
+    G -- For BI/Analytics --> I;
+    H -- For BI/Analytics --> I;
+```
 
-Running the Pipeline
+---
 
-Verifying the Data & Performance
+## Goals
 
-Future Enhancements
+- **Ingest Raw Data:** Load `sales_data.csv` into a PostgreSQL staging table.
+- **Initial Data Cleaning:** Handle data types and missing values on load.
+- **Transform Data:** Build a dimensional model (fact and dimension tables) with dbt.
+- **Orchestrate Workflow:** Automate the ELT process via Apache Airflow.
+- **Demonstrate Core DE Skills:** Show proficiency in Python, SQL, PostgreSQL, Docker, Airflow, and dbt.
 
-1. Project Overview
-This project implements an Extract, Load, Transform (ELT) data pipeline for sales data. The primary objective is to take raw sales transaction records from a CSV file, load them into a staging area, and then transform them into a Kimball-style dimensional model (Fact and Dimension tables) ready for business intelligence and analytics. The entire workflow is automated using Apache Airflow.
+---
 
-2. Goals
-Ingest Raw Data: Load sales_data.csv into a PostgreSQL staging table.
+## Technologies Used
 
-Initial Data Cleaning: Perform basic data type conversions and handle missing values during ingestion.
+| Category         | Tool/Library           | Purpose                                    |
+|------------------|-----------------------|--------------------------------------------|
+| Language         | Python                | Scripting and orchestration                |
+| Data Manipulation| pandas                | Read/clean CSV data                        |
+| DB Connectivity  | sqlalchemy, psycopg2  | Connect/load to PostgreSQL                 |
+| Database         | PostgreSQL            | Raw & transformed data storage             |
+| Orchestration    | Apache Airflow        | Schedule & monitor pipeline                |
+| Transformation   | dbt, dbt-postgres     | SQL-based data modeling                    |
+| Containerization | Docker, Docker Compose| Dev environment, service isolation         |
+| Visualization    | Power BI (future)     | BI/dashboarding                            |
 
-Transform Data: Build a dimensional data model (fact and dimension tables) from the staging data using dbt.
+---
 
-Orchestrate Workflow: Automate the entire ELT process using Apache Airflow, scheduling data ingestion and transformation.
+## Getting Started
 
-Demonstrate Core DE Skills: Showcase proficiency in Python, SQL, PostgreSQL, Docker, Airflow, and dbt.
+1. **Clone this repository**
+   ```bash
+   git clone https://github.com/yourusername/Sales-Analytics-Pipeline.git
+   cd Sales-Analytics-Pipeline
+   ```
 
-3. Architecture
-The pipeline follows an ELT (Extract, Load, Transform) pattern:
+2. **Copy your raw sales data**
+   - Place your `sales_data.csv` into the `data/` folder.
 
-Okay, here's a comprehensive documentation for your data engineering project, suitable for a GitHub repository. It covers everything from setup to the completed pipeline, highlighting the tools and concepts you've mastered.
+3. **Run with Docker Compose**
+   ```bash
+   docker-compose up --build
+   ```
 
-Data Engineering Sales Analytics Pipeline
-This project demonstrates the fundamental concepts and practical application of building a modern data engineering pipeline. It extracts raw sales data, cleans and transforms it into a structured analytical data model, and orchestrates the entire process using industry-standard tools.
+4. **Access Airflow**
+   - Visit [localhost:8080](http://localhost:8080) to view and manage DAGs.
 
-Table of Contents
-Project Overview
+5. **Monitor Transformations**
+   - dbt transformations and model outputs are in the PostgreSQL `analytics` schema.
 
-Goals
+---
 
-Architecture
+## Future Work
 
-Technologies Used
+- Add Power BI dashboards/visualizations.
+- Implement tests and data quality checks.
+- Add support for incremental loads and new data sources.
 
-Setup Instructions (Local Environment)
-
-Prerequisites
-
-Step 1: Project Setup
-
-Step 2: PostgreSQL Database Setup (Sales Data)
-
-Step 3: Apache Airflow Setup
-
-Step 4: dbt Core Setup
-
-Pipeline Details
-
-Data Ingestion (Python)
-
-Data Transformation (dbt)
-
-Orchestration (Airflow)
-
-Running the Pipeline
-
-Verifying the Data & Performance
-
-Future Enhancements
-
-1. Project Overview
-This project implements an Extract, Load, Transform (ELT) data pipeline for sales data. The primary objective is to take raw sales transaction records from a CSV file, load them into a staging area, and then transform them into a Kimball-style dimensional model (Fact and Dimension tables) ready for business intelligence and analytics. The entire workflow is automated using Apache Airflow.
-
-2. Goals
-Ingest Raw Data: Load sales_data.csv into a PostgreSQL staging table.
-
-Initial Data Cleaning: Perform basic data type conversions and handle missing values during ingestion.
-
-Transform Data: Build a dimensional data model (fact and dimension tables) from the staging data using dbt.
-
-Orchestrate Workflow: Automate the entire ELT process using Apache Airflow, scheduling data ingestion and transformation.
-
-Demonstrate Core DE Skills: Showcase proficiency in Python, SQL, PostgreSQL, Docker, Airflow, and dbt.
-
-3. Architecture
-The pipeline follows an ELT (Extract, Load, Transform) pattern:
-
-Extract & Load (EL): A Python script reads the sales_data.csv, performs initial cleaning, and loads the data into a staging.sales table in PostgreSQL. This script is triggered by Airflow.
-
-Transform (T): dbt models define transformations that read from staging.sales and create cleaned, structured dim_dates, dim_products, and fact_sales tables in the analytics schema of the same PostgreSQL database. This dbt process is also triggered by Airflow.
-
-Orchestration: Apache Airflow schedules and monitors the sequential execution of the Python ingestion script and the dbt transformation process.
-
-4. Technologies Used
-
-Language: Python 
-
-pandas: For data manipulation and CSV reading.
-
-sqlalchemy: For database connectivity.
-
-psycopg2-binary: PostgreSQL adapter for Python.
-
-
-Database: PostgreSQL 
-
-Persistent storage for raw and transformed data.
-
-
-Orchestration: Apache Airflow 
-
-For scheduling and monitoring the data pipeline.
-
-Running via Docker Compose for local development.
-
-
-Transformation: dbt (data build tool) 
-
-For defining and executing SQL-based data transformations.
-
-dbt-postgres: PostgreSQL adapter for dbt.
-
-dbt-utils: dbt package for common SQL macros (e.g., generate_surrogate_key).
-
-Containerization: Docker & Docker Compose
-
-Used to containerize PostgreSQL and Airflow services for isolated and consistent environments.
-
-Data Visualization (Future): Power BI (or similar BI tool)
-
-To connect to the transformed analytical tables for dashboarding.
-
-
-
+---
