@@ -1,6 +1,6 @@
 # Sales-Analytics-Pipeline
 
-This project demonstrates building a modern data engineering pipeline with industry-standard tools. It extracts raw sales data, cleans and transforms it into a structured analytical data model, and orchestrates the process using Apache Airflow.
+This project demonstrates building a modern data engineering pipeline with industry-standard tools. It extracts raw sales data, cleans and transforms it into a structured analytical data model, and orchestrates the process using Apache Air.
 
 ---
 
